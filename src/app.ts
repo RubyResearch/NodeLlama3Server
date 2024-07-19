@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from 'express'
+import bodyParser from "body-parser";
 import * as os from 'os'
 import { IRoute } from './definitions/IRoute'
 
@@ -9,7 +10,15 @@ class App {
 
   constructor(routes: IRoute[]) {
     this.app = express();
+
+    this.initializeMiddlewares();
     this.initializeRoutes(routes);
+  }
+
+  private initializeMiddlewares() {
+    this.app.use(
+      bodyParser.json()
+    );
   }
 
   private initializeRoutes(routes: IRoute[]) {
