@@ -6,7 +6,7 @@
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/server.ts | npx tsx pino-pretty",
+    "dev": "tsx ./src/server.ts | npx tsx pino-pretty",
     "start": "tsx ./src/server.ts",
     "test": "jest",
     "test-coverage": "jest --coverage",

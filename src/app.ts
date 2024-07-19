@@ -1,38 +1,33 @@
 import express, { Application, Request, Response } from 'express'
-import cors from 'cors'
-import helmet from 'helmet'
-import compression from 'compression'
-import routes from './common/routes'
-import unknownEndpoint from './middlewares/unknownEndpoint'
+import * as os from 'os'
+import { IRoute } from './definitions/IRoute'
 
-// to use env variables
-import './common/env'
+const PORT = process.env.PORT || "8080"
 
-const app: Application = express()
+class App {
+  app: express.Application;
 
-// middleware
-app.disable('x-powered-by')
-app.use(cors())
-app.use(helmet())
-app.use(compression())
-app.use(
-  express.urlencoded({
-    extended: true,
-    limit: process.env.REQUEST_LIMIT || '100kb',
-  }),
-)
-app.use(express.json())
+  constructor(routes: IRoute[]) {
+    this.app = express();
+    this.initializeRoutes(routes);
+  }
 
-// health check
-app.get('/', (req: Request, res: Response) => {
-  res.status(200).json({
-    'health-check': 'OK: top level api working',
-  })
-})
+  private initializeRoutes(routes: IRoute[]) {
+    routes.forEach((route) => {
+      this.app.use("/api/", route.router);
+    });
+  }
 
-app.use('/api/', routes)
+  listen() {
+    this.app.listen(PORT, () =>
+      console.log(`🚀 Llama3 Model Local Server started at http://${os.hostname()}:${PORT}`)
+    );
+  }
 
-// Handle unknown endpoints
-app.use('*', unknownEndpoint)
+  get server() {
+    return this.app;
+  }
+}
 
-export default app
+export default App;
+
