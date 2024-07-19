@@ -1,11 +1,12 @@
 import { Router } from 'express'
+import userController from '../resources/controller'
 
 const router: Router = Router()
 
-// import routes
-import userRouter from '../resources/users/routes'
 
-// Higher level routes definition
-router.use('/user', userRouter)
+router.route('/chat/completions').get(userController.chatCompletions)
+// router.route('/embeddings').get(userController.getAll)
+
+
 
 export default router
