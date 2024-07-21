@@ -14,6 +14,12 @@ class LlamaRoute extends BaseRoute {
         route: "/chat/completions",
         controller: this.controller.chatCompletions,
         middlewares: [],
+      },
+      {
+        method: "post",
+        route: "/embeddings",
+        controller: this.controller.embedding,
+        middlewares: [],
       }
     ];
 
