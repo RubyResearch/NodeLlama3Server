@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { getCompletionResponse } from '../services/nodeLlamaService'
+import { getCompletionResponse, getEmbeddingResponse } from '../services/nodeLlamaService'
 
 class LlamaController {
   public chatCompletions = async (
@@ -52,18 +52,16 @@ class LlamaController {
       console.log("embedding method")
       console.log(req.body, req.params, req.originalUrl)
 
+      // get embedding vector of input string.
+      const vectorData = await getCompletionResponse("what is crypto?")
+
       const sampleRes = {
         "object": "list",
         "data": [
           {
             "object": "embedding",
             "index": 0,
-            "embedding": [
-              -0.006929283495992422,
-              -0.005336422007530928,
-              -4.547132266452536e-05,
-              -0.024047505110502243
-            ],
+            "embedding": vectorData,
           }
         ],
         "model": "text-embedding-3-small",
@@ -72,7 +70,7 @@ class LlamaController {
           "total_tokens": 5
         }
       }
-
+      
       res.status(200).json(sampleRes);
     } catch (error) {
       next(error);
