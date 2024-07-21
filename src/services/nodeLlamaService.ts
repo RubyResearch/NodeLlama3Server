@@ -1,6 +1,6 @@
 import {fileURLToPath} from "url";
 import path from "path";
-import {LlamaModel, LlamaContext, LlamaChatSession} from "node-llama-cpp";
+import {LlamaModel, LlamaContext, LlamaChatSession, LlamaJsonSchemaGrammar} from "node-llama-cpp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -10,12 +10,27 @@ const model = new LlamaModel({
 });
 const context = new LlamaContext({model});
 const session = new LlamaChatSession({context});
+const grammar = new LlamaJsonSchemaGrammar({
+    "type": "object",
+    "properties": {
+        "content": {
+            "type": "string"
+        }
+    }
+});
+
 
 
 const getCompletionResponse = async (answer :string) => {
-    const response = await session.prompt(answer);
-    console.log("AI: " + response);
-    return response
+    const response = await session.prompt(answer, {
+        grammar,
+        maxTokens: context.getContextSize()
+    });
+    const parsedResponse = grammar.parse(response);
+
+
+    console.log("AI: " + parsedResponse.content);
+    return parsedResponse.content
 }
 
 export {
