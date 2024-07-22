@@ -18,7 +18,10 @@ class LlamaController {
         answer: message.content,
         temperature: temperature
       })
-      const messageContent = `json\`\`\`\n` + `${result}` + `\n\`\`\``
+      // const messageContent = `json\`\`\`\n` + `${result}` + `\n\`\`\``
+
+      const messageContent = `json\`\`\`\n` + `{"user": "${result.user}", "content": "${result.responseMessage}", "action": "${result.action}" }` + `\n\`\`\``
+
 
       const sampleRes = {
         "choices": [

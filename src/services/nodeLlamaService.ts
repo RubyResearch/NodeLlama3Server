@@ -6,7 +6,9 @@ import {getLlama, LlamaChatSession, LlamaJsonSchemaGrammar} from "node-llama-cpp
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 interface GrammarData {
-    content: String
+    user: String,
+    responseMessage: String,
+    action: String
 }
 
 
@@ -25,7 +27,7 @@ const getCompletionResponse = async ({answer, temperature}) => {
             "user": {
                 "type": "string"
             },
-            "content": {
+            "responseMessage": {
                 "type": "string"
             },
             "action": {
