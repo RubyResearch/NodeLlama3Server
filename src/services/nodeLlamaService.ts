@@ -10,7 +10,7 @@ interface GrammarData {
 }
 
 
-const getCompletionResponse = async (answer :string) => {
+const getCompletionResponse = async ({answer, temperature}) => {
     const llama = await getLlama();
     const model = await llama.loadModel({
         modelPath: path.join(__dirname, "models", "Meta-Llama-3-8B-Instruct.Q2_K.gguf")
@@ -22,21 +22,28 @@ const getCompletionResponse = async (answer :string) => {
     const grammar = new LlamaJsonSchemaGrammar(llama, {
         "type": "object",
         "properties": {
+            "user": {
+                "type": "string"
+            },
             "content": {
+                "type": "string"
+            },
+            "action": {
                 "type": "string"
             }
         }
     });
 
     const response = await session.prompt(answer, {
-        grammar
+        grammar,
+        temperature: Number(temperature)
     });
 
     const parsedResponse: GrammarData = grammar.parse(response);
 
 
-    console.log("AI: " + parsedResponse?.content);
-    return parsedResponse?.content
+    console.log("AI: " + parsedResponse);
+    return parsedResponse
 }
 
 const getEmbeddingResponse = async (input :string) => {

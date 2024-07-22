@@ -8,11 +8,17 @@ class LlamaController {
     next: NextFunction
   ) => {
     try {
-      // const { model, messages } = req.body;
+      console.log("completion method")
+      console.log(req.body, req.params, req.originalUrl)
+      const message = req.body.messages[0]
+      const temperature = req.body.temperature
 
       // get response from Llama3 model
-      const result = await getCompletionResponse("what is crypto?")
-      const messageContent = `json\`\`\`\n` + `{"user": "r_cubed", "content": "${result}", "action": "ELABORATE" }` + `\n\`\`\``
+      const result = await getCompletionResponse({
+        answer: message.content,
+        temperature: temperature
+      })
+      const messageContent = `json\`\`\`\n` + `${result}` + `\n\`\`\``
 
       const sampleRes = {
         "choices": [
@@ -51,9 +57,10 @@ class LlamaController {
     try {
       console.log("embedding method")
       console.log(req.body, req.params, req.originalUrl)
+      const input = req.body.input
 
       // get embedding vector of input string.
-      const vectorData = await getCompletionResponse("what is crypto?")
+      const vectorData = await getEmbeddingResponse(input)
 
       const sampleRes = {
         "object": "list",
